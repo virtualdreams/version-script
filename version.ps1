@@ -84,16 +84,28 @@ if($information -match "^v(\d+).(\d+).*") {
 	if($_ -match "\[assembly: AssemblyFileVersion\(""(\d+)\.(\d+)\.(\d+)\.(\d+)\""\)\]") {
 		if($m) {
 			$_ -replace "\[assembly: AssemblyFileVersion\(""(\d+)\.(\d+)\.(\d+)\.(\d+)\""\)\]", "[assembly: AssemblyFileVersion(""$major.$minor.`$3.$commits"")]"
-			Write-Host ([string]::Format("Version (from tag): {0}.{1}.{2}.{3}", $major, $minor, [string]$matches[3], $commits))
+			Write-Host ([string]::Format("File version (from tag): {0}.{1}.{2}.{3}", $major, $minor, [string]$matches[3], $commits))
 		}
-		else {
+		else
+		{
 			$_ -replace "\[assembly: AssemblyFileVersion\(""(\d+)\.(\d+)\.(\d+)\.(\d+)\""\)\]", "[assembly: AssemblyFileVersion(""`$1.`$2.`$3.$commits"")]"
-			Write-Host ([string]::Format("Version (from file): {0}.{1}.{2}.{3}", [string]$matches[1], [string]$matches[2], [string]$matches[3], $commits))
+			Write-Host ([string]::Format("File version (from file): {0}.{1}.{2}.{3}", [string]$matches[1], [string]$matches[2], [string]$matches[3], $commits))
+		}
+	}
+	elseif($_ -match "[assembly: AssemblyVersion(""(\d+)\.(\d+)\.(\d+)\.(\d+)\"")]") {
+		if($m) {
+			$_ -replace "\[assembly: AssemblyVersion\(""(\d+)\.(\d+)\.(\d+)\.(\d+)\""\)\]", "[assembly: AssemblyVersion(""$major.`$2.`$3.`$4"")]"
+			Write-Host ([string]::Format("Assembly version (from tag): {0}.{1}.{2}.{3}", $major, [string]$matches[2], [string]$matches[3], [string]$matches[4])
+		}
+		else
+		{
+			$_ -replace "\[assembly: AssemblyVersion\(""(\d+)\.(\d+)\.(\d+)\.(\d+)\""\)\]", "[assembly: AssemblyVersion(""`$1.`$2.`$3.`$4"")]"
+			Write-Host ([string]::Format("Assembly version (from file): {0}.{1}.{2}.{3}", [string]$matches[1], [string]$matches[2], [string]$matches[3], [string]$matches[4]))
 		}
 	}
 	elseif($_ -match "\[assembly: AssemblyInformationalVersion\(""(.*)""\)\]") {
 		$_ -replace "\[assembly: AssemblyInformationalVersion\(""(.*)""\)\]", "[assembly: AssemblyInformationalVersion(""$information"")]"
-		Write-Host ([string]::Format("Information: {0}", $information))
+		Write-Host ([string]::Format("Information version: {0}", $information))
 	}
 	else
 	{
