@@ -79,8 +79,9 @@ function Get-FileVersion()
 	{
 		$major = [string]$matches[1]
 		$minor = [string]$matches[2]
-		$revision = [string]$matches[3]
-		$build = [string]$matches[4]
+		$build = [string]$matches[3]
+		$revision = [string]$matches[4]
+		
 		
 		$obj.Major = $major
 		$obj.Minor = $minor
@@ -119,8 +120,8 @@ function Get-GitVersion()
 		
 		$obj.Major = $major
 		$obj.Minor = $minor
-		$obj.Revision = $revision
 		$obj.Build = $commits
+		$obj.Revision = $revision
 		$obj.Parsed = $true
 	}
 	
@@ -135,7 +136,7 @@ function Get-GitDescription()
 }
 
 ### Write version info to AssemblyInfo.cs
-function Write-Assembly([string]$major, [string]$minor, [string]$revision, [string]$build, [string]$description)
+function Write-Assembly([string]$major, [string]$minor, [string]$build, [string]$revision, [string]$description)
 {
 	(Get-Content $file -Encoding UTF8) `
 		-replace "^\[assembly: AssemblyVersion\("".*""\)\]", "[assembly: AssemblyVersion(""$major.0.0.0"")]" `
@@ -157,12 +158,12 @@ Write-Host "Description:  " $d
 if($g.Parsed -eq $True)
 {
 	Write-Host "Use from git: " $g.Major $g.Minor $g.Build $g.Revision $d
-	Write-Assembly $g.Major $g.Minor $g.Revision $g.Build $d
+	Write-Assembly $g.Major $g.Minor $g.Build $g.Revision $d
 }
 else
 {
 	Write-Host "Use from file:" $a.Major $a.Minor $a.Build $a.Revision $d
-	Write-Assembly $a.Major $a.Minor $a.Revision $a.Build $d
+	Write-Assembly $a.Major $a.Minor $a.Build $a.Revision $d
 }
 
 Write-Host "Version information updated."
